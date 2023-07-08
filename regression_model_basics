@@ -1,0 +1,65 @@
+import numpy as np, pandas as pd
+from sklearn import metrics
+from sklearn.metrics import r2_score,mean_squared_error, mean_absolute_error
+
+def mean_absolute_percentage_error(y_true, y_pred): 
+    y_true, y_pred = np.array(y_true), np.array(y_pred)
+    return np.mean(np.abs((y_true - y_pred) / (y_true +  0.0000001))) * 100
+
+def calculate_performance(test_Y, test_pred):
+    mse = mean_squared_error(test_Y, test_pred)
+    rmse = np.sqrt(mse)
+    print("RMSE: ", round(rmse,2))
+    print("R2: ", round(r2_score(test_Y, test_pred),2))
+    print('MAE: ', round(mean_absolute_error(test_Y, test_pred),2))
+    print('MAPE: ', round(mean_absolute_percentage_error(test_Y, test_pred),2))
+    return
+
+## Calculate the deviation 
+def generate_deviation_stats(pred, actual):
+    df = pd.DataFrame(pred)
+    df['actual'] = actual
+    df.rename(columns = {0: 'pred'}, inplace = True)
+    df['diff'] = abs(df['actual']- df['pred'])
+    df['actual'] = df['actual'].replace(0,1)
+    df['pct_deviation'] =  round(df['diff']*100/df['actual'],4)
+    df['pct_deviation'].value_counts()/len(df)
+    print('max percentage deviation {}%'.format(df['pct_deviation'].max()))
+    deviations = [0,2,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,150,200]
+    len_deviations = []
+    for i in deviations:
+        dev = df.loc[df['pct_deviation'] <= i]
+        len_ = len(dev)
+        len_deviations.append(len_)
+    #for i,index in enumerate(deviations):
+    #    len_deviations[i+1] = len_deviations[i+1]-len_deviations[i]
+    #    if(i==len(deviations)-2):
+    #        break;
+    for i,index in enumerate(deviations):
+        print('{} % \tdeviation - \tcount: {}, \tpct {}%'.format(index,len_deviations[i],round(len_deviations[i]*100/len(df),2)))
+    return
+
+#Remove claims with 0s
+def generate_deviation_stats_wo_0(pred, actual):
+    df = pd.DataFrame(pred)
+    df['actual'] = actual
+    df.rename(columns = {0: 'pred'}, inplace = True)
+    df['diff'] = abs(df['actual']- df['pred'])
+    df = df.loc[df['actual']  != 0]
+    #df['actual'] = df['actual'].replace(0,1)
+    df['pct_deviation'] =  round(df['diff']*100/df['actual'],4)
+    df['pct_deviation'].value_counts()/len(df)
+    print('max percentage deviation {}%'.format(df['pct_deviation'].max()))
+    deviations = [0,2,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100,150,200]
+    len_deviations = []
+    for i in deviations:
+        dev = df.loc[df['pct_deviation'] <= i]
+        len_ = len(dev)
+        len_deviations.append(len_)
+    #for i,index in enumerate(deviations):
+    #    len_deviations[i+1] = len_deviations[i+1]-len_deviations[i]
+    #    if(i==len(deviations)-2):
+    #        break;
+    for i,index in enumerate(deviations):
+        print('{} % \tdeviation - \tcount: {}, \tpct {}%'.format(index,len_deviations[i],round(len_deviations[i]*100/len(df),2)))
+    return

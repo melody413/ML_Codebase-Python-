@@ -1,0 +1,6 @@
+awk < R4826-201801_RCMND_SPSH2.txt '{print $98}' | sort | uniq | wc –l
+head -1 R4826-201801_RCMND_SPSH.txt | tr '|' '\n' | cat -n | grep "rcmnd_prtf_cd"
+awk -F "|" '{ if(($145 == "N")||($145 == "pmt_arng_ind")) { print } }' R4826-201801_RCMND_SPSH.txt > R4826-201801_RCMND_SPSH_n.txt
+awk -F '|' '{print $98}' R4826-201801_RCMND_SPSH.txt | sort | uniq -c
+while read p; do head -1 R4826-201801_RCMND_SPSH2.txt | tr '|' '\n' | cat -n | grep "$p"; done < cols.txt
+wc -l <filename>

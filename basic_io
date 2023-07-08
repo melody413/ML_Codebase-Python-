@@ -1,0 +1,37 @@
+import pandas as pd, numpy as np, csv, sys, json, pickle, re
+from sklearn.model_selection import train_test_split #For stratified sampling
+
+from PARAMETERS_global import *
+
+def read_encoder(encoder_type = 'label/le', variable_name = 'default'):
+    '''loads classes from an encoder'''
+    return pickle.load(open(path_data_output + '/encoders/' + encoder_type + '_' + variable_name + '.pkl','rb'))
+        
+def save_csv(df, path, index = False, compression = None):
+    df.to_csv(path, index = index,  compression = compression)
+    return
+
+def write_encoder(encoder, encoder_type = 'label/le', variable_name = 'default'):
+    '''Takes the encoder and saves it as .pkl file'''
+    with open(path_data_output + '/encoders/' + encoder_type + '_' + variable_name + '.pkl', 'wb') as outfile:
+        pickle.dump(encoder,outfile)
+    return
+    
+def intersection(list_a, list_b):
+    return list(set(list_a).intersection(set(list_b)))
+
+def difference(list_a, list_b):
+    # alternate implementatiion - [x for x in list_a if x not in list_b]
+    return list(set(list_a).difference(set(list_b)))
+
+def union(list_a, list_b):
+    # alternate implementatiion - [x for x in list_a if x not in list_b]
+    return list(set(list_a).union(set(list_b)))
+
+def select_dtype(df, dtypes):
+    df = df.select_dtypes(include=dtypes)
+    return df
+
+def remove_dtype(df, dtypes):
+    df = df.select_dtypes(include=dtypes)
+    return df
